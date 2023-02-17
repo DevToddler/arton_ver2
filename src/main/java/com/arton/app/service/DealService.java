@@ -95,11 +95,11 @@ public class DealService {
 	}
 
 	/** 사용자의 해당 공연 찜 여부 확인 */
-	public boolean isLiked(Integer userIdx, Integer perfCode) {
+	public Integer isLiked(Integer userIdx, Integer perfCode) {
 		Map map = new HashMap();
 		map.put("userIdx", userIdx);
 		map.put("perfId", perfCode);
-		return wishlistDao.selectWishlistByUserIdxAndPerfId(map) != null;
+		return wishlistDao.selectWishlistByUserIdxAndPerfId(map) != null ? 1 : 0;
 	}
 
 	/** 찜하기 */

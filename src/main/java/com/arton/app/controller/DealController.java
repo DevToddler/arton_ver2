@@ -33,7 +33,9 @@ public class DealController {
 		/* 사용자의 해당 공연 찜 여부 확인 */
 		Integer userIdx = (Integer) session.getAttribute("userIdx");
 		if (userIdx != null) {
-			m.addAttribute("isLiked", dealService.isLiked(perfCode, userIdx));
+			m.addAttribute("isLiked", dealService.isLiked(userIdx, perfCode));
+			System.out.println("################################");
+			System.out.println(m);
 		}
 
 		return "deal";
@@ -41,12 +43,12 @@ public class DealController {
 
 
 	/* Ajax - 예매 */
-
+	@ResponseBody
 	@PostMapping("/book")
-	public @ResponseBody Map book(@RequestBody BookingRequest bookingRequest,
-								  HttpSession session,
-								  HttpServletResponse response,
-								  Model m) throws IOException {
+	public Map book(@RequestBody BookingRequest bookingRequest,
+					HttpSession session,
+					HttpServletResponse response,
+					Model m) throws IOException {
 
 		Integer perfCode = bookingRequest.getPerfCode();
 		Integer userIdx = (Integer) session.getAttribute("userIdx");
@@ -82,25 +84,21 @@ public class DealController {
 	}
 
 	/* Ajax - 찜하기 */
+	@ResponseBody
 	@PostMapping("/like")
-	public String like(@RequestBody Map<String, String> map, HttpSession session, HttpServletResponse response) throws
-			Exception {
+	public Map<String, Integer> like(@RequestBody Map<String, String> map,
+									 HttpSession session,
+									 HttpServletResponse response) throws Exception {
 
-		System.out.println(map);
-		System.out.println(map.get("perfCode"));
 		Integer userIdx = (Integer) session.getAttribute("userIdx");
-		System.out.println(1);
 		/* 만약의 경우 로그인 없이 넘어왔을 경우 로그인 페이지로*/
 		if (userIdx == null) {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println("<script>alert('로그인이 필요합니다.'); location.href='/app/login/login'</script>");
 			out.flush();
-			System.out.println(2);
-
-			return null;
+			return new HashMap<>();
 		}
-		System.out.println(3);
 
 		int perfCode = 0;
 		try {
@@ -108,29 +106,20 @@ public class DealController {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		System.out.println(perfCode);
 
-		boolean liked = dealService.isLiked(userIdx, perfCode);
-		System.out.println(liked);
-		System.out.println("0000000000000000");
-		if (liked) {
-			System.out.println("1");
-
+		Integer liked = dealService.isLiked(userIdx, perfCode);
+		if (liked == 1) {
 			dealService.offLike(userIdx, perfCode);
 		} else {
-			System.out.println("2");
-
 			dealService.onLike(userIdx, perfCode);
 		}
-		boolean bool = dealService.isLiked(userIdx, perfCode);
+		Integer isLiked = dealService.isLiked(userIdx, perfCode);
+		Map<String, Integer> resultMap = new HashMap<>();
 
-		String str = "";
-		if (bool) {
-			str = "1";
-		} else {
-			str = "0";
-		}
-		return str;
+		resultMap.put("isLiked", isLiked);
+		resultMap.put("likeCnt", dealService.readPerf(perfCode).getLikeCnt());
+
+		return resultMap;
 	}
 
 	//

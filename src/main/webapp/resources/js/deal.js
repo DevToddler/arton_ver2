@@ -96,7 +96,7 @@ function booking(){
 
 $(document).ready(function(){
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /* 예매하기 섹션 js 기능 및 Ajax */
+    /* 예매하기 섹션 js 기능 */
     // btn 날짜 선택 시 회차 선택 open
     $('.choice_btn').click(function() {
         $(this).siblings().removeClass('btn_chk');
@@ -154,13 +154,13 @@ $(document).ready(function(){
         $(this).addClass('btn_chk');
 
     });
-    /* 예매하기 섹션 js 기능 및 Ajax - 끝 */
+    /* 예매하기 섹션 js 기능 끝 */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
-    //좋아요 likes 기능
+    // 좋아요 likes 기능
     // $('.empty_heart').click(function(){
     //     $(this).css({
     //         display : 'none'
@@ -177,45 +177,42 @@ $(document).ready(function(){
     //
     // });
 
-    // $('.isLiked').click(function (){
-    //     console.log("클릭")
-    //     let isLogin = document.getElementsByClassName('my_img');
-    //     let userId = isLogin[0].getAttribute('id');
-    //     // let uri = window.location.search;
-    //     let perfCode = new URLSearchParams(location.search).get('perfCode');
-    //
-    //     if(null == userId || userId.trim().length == 0){
-    //         alert("로그인이 필요한 기능입니다.");
-    //         return false;
-    //     }
-    //     console.log(perfCode)
-    //     let data = {
-    //         perfCode : perfCode
-    //     }
-    //
-    //     /* 찜하기 - Ajax 시작 **************************************************************************/
-    //     $.ajax({
-    //         url: '/app/deal/like',
-    //         type: 'post',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify(data),
-    //         success: function (result) {
-    //             console.log(result)
-    //             console.log(result * 1)
-    //             if (result * 1) {
-    //                 $('.isLiked').hide();
-    //                 $('.full_heart').show();
-    //             } else {
-    //                 $('.isLiked').hide();
-    //                 $('.empty_heart').show();
-    //             }
-    //         },
-    //         error: function (request, status, error) {
-    //             alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-    //             // alert("에러.")
-    //         }
-    //     }); /* 예매 - Ajax 끝 **************************************************************************/
-    // });
+    $('.isLiked').click(function (){
+        let isLogin = document.getElementsByClassName('my_img');
+        let userId = isLogin[0].getAttribute('id');
+        // let uri = window.location.search;
+        let perfCode = new URLSearchParams(location.search).get('perfCode');
+
+        if(null == userId || userId.trim().length == 0){
+            alert("로그인이 필요한 기능입니다.");
+            return false;
+        }
+        let data = {
+            perfCode : perfCode
+        }
+
+        /* 찜하기 - Ajax 시작 **************************************************************************/
+        $.ajax({
+            url: '/app/deal/like',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.isLiked == 1) {
+                    $('.isLiked').removeClass('show_this');
+                    $('.full_heart').addClass('show_this');
+                } else {
+                    $('.isLiked').removeClass('show_this');
+                    $('.empty_heart').addClass('show_this');
+                }
+                $('.likes_cnt').text(data.likeCnt);
+            },
+            error: function (request, status, error) {
+                // alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                alert("에러.")
+            }
+        }); /* 예매 - Ajax 끝 **************************************************************************/
+    });
 
 
 

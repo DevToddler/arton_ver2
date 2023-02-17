@@ -164,11 +164,13 @@
                     </div>
                     <div class="like_box">
                         <c:choose>
-                            <c:when test="${isLiked == true}">
-                                <img src="<c:url value='/img/full_heart.png'/>" alt="" class="isLiked full_heart">
+                            <c:when test="${isLiked == 1}">
+                                <img src="<c:url value='/img/full_heart.png'/>" alt="" class="isLiked full_heart show_this">
+                                <img src="<c:url value='/img/empty_heart.png'/>" alt="" class="isLiked empty_heart">
                             </c:when>
                             <c:otherwise>
-                                <img src="<c:url value='/img/empty_heart.png'/>" alt="" class="isLiked empty_heart">
+                                <img src="<c:url value='/img/full_heart.png'/>" alt="" class="isLiked full_heart">
+                                <img src="<c:url value='/img/empty_heart.png'/>" alt="" class="isLiked empty_heart show_this">
                             </c:otherwise>
                         </c:choose>
                         <span class="likes_cnt">${perfDto.likeCnt}</span>
